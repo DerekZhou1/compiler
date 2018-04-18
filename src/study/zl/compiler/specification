@@ -1,0 +1,47 @@
+解释器：
+Parser 语法解析器
+Lexer 词法解析器
+Token 符号类
+
+LL(1)
+list :'[' + elements +']'
+  ;
+elements:element +(',' +element)*
+  ;
+element :NAME     
+  |list
+  ;
+
+
+LL(2)    //有时候只向前看一位无法确定要采用哪种解析模式，必须要多看几位
+list :'[' + elements +']'
+  ;
+elements:element +(',' +element)*
+  ;
+element :NAME     
+  | NAME +'='+ NAME
+  |list
+  ;
+
+回溯解析（推演）    因为要判断用哪一种解析项必须要 看list后面是结束还是=，而list又不是定长的，所以不能采用LL(K)，要使用回溯推演
+stat: list EOF
+  |assign EOF
+  ;
+assign:list '=' list;
+list :'[' + elements +']'
+  ;
+elements:element +(',' +element)*
+  ;
+element :NAME     
+  | NAME +'='+ NAME
+  |list
+  ;
+
+谓词解析  (在定义变量时，可以用类当做修饰符 const T y，这时的ID名就不知道是type中的id还是declaration中的ID
+要用谓词语句判断isTypeName(ID),这个判断需要基于上下文来判断，无法通过规则来判断)
+declaration: (qualifier|type) +ID;
+qualifier: const |volatile;
+type : int|unsigned |long |ID
+
+
+
